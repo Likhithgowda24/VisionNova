@@ -100,21 +100,6 @@
                     } else {
                         initials = parts[0].substring(0, 2);
                     }
-                    document.getElementById('nav-avatar').textContent = initials.toUpperCase();
-
-                    // Update main welcome heading with user's first name
-                    const firstName = parts[0];
-                    document.getElementById('welcome-text').innerHTML = `Welcome back, ${firstName} <img src="assets/app_logo.jpg" alt="Logo" style="width: 1.4em; height: 1.4em; mix-blend-mode: screen; filter: contrast(1.5) brightness(1.2); -webkit-mask-image: radial-gradient(circle at center, black 65%, transparent 85%); mask-image: radial-gradient(circle at center, black 65%, transparent 85%);">`;
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            if(confirm('Are you sure you want to log out?')) {
-                localStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
             }
         });
     </script>
@@ -122,6 +107,7 @@
 <script src="profile_modal.js"></script>
 </body>
 </html>
+
 
 
 
