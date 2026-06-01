@@ -165,7 +165,7 @@ async def analyze_resume(data: ResumeData):
     }
     
     try:
-        response = requests.post(OLLAMA_URL, json=payload)
+        response = requests.post(OLLAMA_URL, json=payload, timeout=2)
         response.raise_for_status()
         result = response.json()
         
@@ -302,7 +302,7 @@ async def generate_mock_test(data: MockTestGenerateRequest):
     }
     
     try:
-        response = requests.post(OLLAMA_URL, json=payload)
+        response = requests.post(OLLAMA_URL, json=payload, timeout=2)
         response.raise_for_status()
         return json.loads(response.json()['response'])
     except Exception as e:
@@ -362,7 +362,7 @@ async def evaluate_mock_test(data: MockTestEvaluateRequest):
     }
     
     try:
-        response = requests.post(OLLAMA_URL, json=payload)
+        response = requests.post(OLLAMA_URL, json=payload, timeout=2)
         response.raise_for_status()
         analysis_data = json.loads(response.json()['response'])
         
@@ -430,7 +430,7 @@ async def chat_interview(data: InterviewChatRequest):
     }
     
     try:
-        response = requests.post("http://localhost:11434/api/chat", json=payload)
+        response = requests.post("http://localhost:11434/api/chat", json=payload, timeout=2)
         response.raise_for_status()
         result = response.json()
         return {"reply": result["message"]["content"]}
@@ -480,4 +480,5 @@ async def send_otp(data: OTPRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
 
