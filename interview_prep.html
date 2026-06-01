@@ -483,7 +483,7 @@
 
         async function sendToAgent(userMessage) {
             try {
-                const response = await fetch('http://localhost:8000/api/chat/interview', {
+                const response = await fetch('/api/chat/interview', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -566,6 +566,7 @@
 <script src="profile_modal.js"></script>
 </body>
 </html>
+
 
 
 

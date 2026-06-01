@@ -201,7 +201,7 @@
             document.getElementById('generating-state').style.display = 'block';
             
             try {
-                const response = await fetch('http://localhost:8000/api/mock-test/generate', {
+                const response = await fetch('/api/mock-test/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -239,7 +239,7 @@
             document.getElementById('evaluating-state').style.display = 'block';
             
             try {
-                const response = await fetch('http://localhost:8000/api/mock-test/evaluate', {
+                const response = await fetch('/api/mock-test/evaluate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -291,6 +291,7 @@
 <script src="profile_modal.js"></script>
 </body>
 </html>
+
 
 
 
