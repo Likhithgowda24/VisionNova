@@ -11,12 +11,11 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 # ---------------------------------------------------------
 # DATABASE SETUP
 # ---------------------------------------------------------
-# This will automatically create 'visionnova.db' inside the backend folder
-DB_FILE = os.path.join(os.path.dirname(__file__), "visionnova.db")
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_FILE}"
+# Connect to Live Supabase PostgreSQL Database!
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:likhith%40123@db.evwyslqwcaaakyrksmpz.supabase.co:5432/postgres"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
