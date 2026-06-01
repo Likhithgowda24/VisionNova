@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="splash_screen.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNova AI - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Assuming bg.png contains the full forest + triangle image as uploaded */
+            background: url('assets/bg.png') no-repeat center center/cover;
+            background-color: #050a05;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            padding-right: 10%;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.3); /* Subtle darkening for text readability */
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .left-hero-section {
+            position: absolute;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38%; /* Slightly reduced width */
+            max-width: 700px; /* Reduced max-width */
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Move blend mode to the container so it blends with the body background! */
+            mix-blend-mode: screen;
+        }
+
+        .left-hero-section img {
+            width: 100%;
+            max-height: 80vh; /* Reduced height */
+            object-fit: contain;
+            animation: float-hero 6s ease-in-out infinite;
+            /* Color graded to match the cool deep green of the forest background */
+            filter: contrast(1.4) brightness(1.1) saturate(0.95) hue-rotate(10deg);
+            /* Tighten mask to hide the hard square borders of the JPG image */
+            -webkit-mask-image: radial-gradient(ellipse 55% 75% at 50% 50%, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 80%);
+            mask-image: radial-gradient(ellipse 55% 75% at 50% 50%, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 80%);
+        }
+
+        @keyframes float-hero {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .login-card {
+            background: rgba(12, 16, 12, 0.5); /* More translucent for glass effect */
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle white border instead of green */
+            border-radius: 30px; /* Very rounded corners like the screenshot */
+            padding: 50px;
+            width: 100%;
+            max-width: 460px;
+            z-index: 5;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 28px; /* Larger font */
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .login-header h1 i {
+            color: #8cc460;
+            font-size: 22px; /* Larger leaves */
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-container i.left-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+        .input-container i.right-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .input-container input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 16px 16px 16px 45px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-container input:focus {
+            border-color: #8cc460;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #8cc460;
+            text-decoration: none;
+        }
+
+        .login-btn {
+            background: #6c9945; /* Closer to the screenshot green */
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 16px 0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 20px rgba(108, 153, 69, 0.3);
+        }
+
+        .login-btn:hover {
+            background: #7aab4f;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 30px 0 20px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .social-btn {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 0;
+            border-radius: 10px;
+            color: #e0e0e0;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .social-btn i {
+            font-size: 18px;
+        }
+
+        .signup-text {
+            text-align: center;
+            margin-top: 35px;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .signup-text a {
+            color: #8cc460;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* OAuth Simulation Modal */
+        .oauth-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .oauth-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .oauth-content {
+            background: rgba(12, 16, 12, 0.8);
+            border: 1px solid rgba(140, 196, 96, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .oauth-modal.show .oauth-content {
+            transform: translateY(0);
+        }
+        .oauth-content i.provider-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .oauth-content h2 {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .oauth-content p {
+            color: #9ca3af;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .loader {
+            width: 45px;
+            height: 45px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #8cc460;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 25px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body {
+                justify-content: center;
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="left-hero-section">
+        <img src="assets/cropped_triangle.png" alt="Giant Floating Triangle">
+    </div>
+
+    <div class="login-card">
+        <div class="login-header">
+            <h1 id="form-title"><i class="ri-leaf-line"></i> Welcome Back <i class="ri-leaf-line"></i></h1>
+            <p id="form-subtitle">Login to continue your journey with us</p>
+        </div>
+        
+        <form onsubmit="handleSubmit(event)">
+            <!-- Full Name (Hidden by default for login mode) -->
+            <div class="form-group" id="name-group" style="display: none;">
+                <label>Full Name</label>
+                <div class="input-container">
+                    <i class="ri-user-line left-icon"></i>
+                    <input type="text" id="fullname" placeholder="e.g. Likhith Gowda">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <div class="input-container">
+                    <i class="ri-mail-line left-icon"></i>
+                    <input type="email" id="email" placeholder="user@gmail.com" required>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label>Password</label>
+                <div class="input-container">
+                    <i class="ri-lock-line left-icon"></i>
+                    <input type="password" id="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
+                    <i class="ri-eye-off-line right-icon" id="toggle-pwd" onclick="togglePassword()"></i>
+                </div>
+            </div>
+            
+            <a href="#" class="forgot-pass" id="forgot-pass" onclick="openForgotModal(event)">Forgot Password?</a>
+            
+            <p id="error-msg" style="color: #ef4444; font-size: 13px; margin-top: 10px; display: none; text-align: center; font-weight: 500;"></p>
+            
+            <button type="submit" class="login-btn" id="submit-btn">
+                Login <i class="ri-arrow-right-line"></i>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span><i class="ri-leaf-line" style="font-size: 10px;"></i> or continue with <i class="ri-leaf-line" style="font-size: 10px;"></i></span>
+        </div>
+
+        <div class="social-login">
+            <button class="social-btn" onclick="handleSocialLogin('Google')">
+                <i class="ri-google-fill" style="color: #ea4335;"></i> Google
+            </button>
+            <button class="social-btn" onclick="handleSocialLogin('LinkedIn')">
+                <i class="ri-linkedin-fill" style="color: #0a66c2;"></i> LinkedIn
+            </button>
+            <button class="social-btn" onclick="handleSocialLogin('GitHub')">
+                <i class="ri-github-fill" style="color: #fff;"></i> GitHub
+            </button>
+        </div>
+
+        <div class="signup-text" id="toggle-text">
+            Don't have an account? <a href="#" onclick="toggleMode(event)">Sign Up</a>
+        </div>
+    </div>
+
+        <!-- Forgot Password Modal -->
+    <div id="forgot-pwd-modal" class="oauth-modal">
+        <div class="oauth-content" id="forgot-content" style="max-width: 420px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="forgot-title" style="margin:0; font-size: 22px; color: #fff;">Reset Password</h2>
+                <i class="ri-close-line" style="font-size: 24px; cursor: pointer; color: #9ca3af;" onclick="closeForgotModal()"></i>
+            </div>
+            
+            <!-- Step 1: Enter Email -->
+            <div id="step-email">
+                <p style="color: #9ca3af; font-size: 14px; margin-bottom: 20px; text-align: left;">Enter your registered email address and we will send you a 6-digit OTP.</p>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-container">
+                        <i class="ri-mail-line left-icon"></i>
+                        <input type="email" id="forgot-email" placeholder="user@gmail.com" required>
+                    </div>
+                </div>
+                <button class="login-btn" onclick="sendOtp()" style="margin-top: 25px;">Send OTP <i class="ri-mail-send-line"></i></button>
+            </div>
+
+            <!-- Step 2: Enter OTP -->
+            <div id="step-otp" style="display: none;">
+                <p style="color: #9ca3af; font-size: 14px; margin-bottom: 20px; text-align: left;">We've sent a 6-digit OTP to your email. Please enter it below.</p>
+                <div class="form-group">
+                    <label>Enter 6-Digit OTP</label>
+                    <div class="input-container">
+                        <i class="ri-shield-keyhole-line left-icon"></i>
+                        <input type="text" id="forgot-otp" placeholder="••••••" maxlength="6" style="letter-spacing: 5px; text-align: center; padding-left: 16px;">
+                    </div>
+                </div>
+                <button class="login-btn" onclick="verifyOtp()" style="margin-top: 25px;">Verify OTP <i class="ri-check-line"></i></button>
+            </div>
+
+            <!-- Step 3: New Password -->
+            <div id="step-new-pwd" style="display: none;">
+                <p style="color: #9ca3af; font-size: 14px; margin-bottom: 20px; text-align: left;">OTP verified successfully! Please enter your new password.</p>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>New Password</label>
+                    <div class="input-container">
+                        <i class="ri-lock-line left-icon"></i>
+                        <input type="password" id="forgot-new-pwd" placeholder="••••••••••••">
+                    </div>
+                </div>
+                <button class="login-btn" onclick="updatePassword()" style="margin-top: 25px;">Set New Password <i class="ri-save-line"></i></button>
+            </div>
+
+            <p id="forgot-error" style="color: #ef4444; font-size: 13px; margin-top: 15px; text-align: center; display: none;"></p>
+        </div>
+    </div>
+
+    <!-- OAuth Simulation Modal -->
+    <div id="oauth-modal" class="oauth-modal">
+        <div class="oauth-content">
+            <i id="oauth-icon" class="provider-icon ri-google-fill"></i>
+            <h2 id="oauth-title">Sign in with Google</h2>
+            <div class="loader"></div>
+            <p id="oauth-status">Connecting securely...</p>
+        </div>
+    </div>
+
+    <script>
+        let isLoginMode = true;
+
+        // Toggle Password Visibility
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            const icon = document.getElementById('toggle-pwd');
+            if(pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                icon.className = 'ri-eye-line right-icon';
+            } else {
+                pwdInput.type = 'password';
+                icon.className = 'ri-eye-off-line right-icon';
+            }
+        }
+
+        // Toggle Between Login and Sign Up
+        function toggleMode(e) {
+            if(e) e.preventDefault();
+            isLoginMode = !isLoginMode;
+            
+            const errorMsg = document.getElementById('error-msg');
+            errorMsg.style.display = 'none';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            
+            if(isLoginMode) {
+                document.getElementById('form-title').innerHTML = '<i class="ri-leaf-line"></i> Welcome Back <i class="ri-leaf-line"></i>';
+                document.getElementById('form-subtitle').innerText = 'Login to continue your journey with us';
+                document.getElementById('name-group').style.display = 'none';
+                document.getElementById('fullname').removeAttribute('required');
+                document.getElementById('forgot-pass').style.display = 'block';
+                document.getElementById('submit-btn').innerHTML = 'Login <i class="ri-arrow-right-line"></i>';
+                document.getElementById('toggle-text').innerHTML = 'Don\'t have an account? <a href="#" onclick="toggleMode(event)">Sign Up</a>';
+            } else {
+                document.getElementById('form-title').innerHTML = '<i class="ri-leaf-line"></i> Create Account <i class="ri-leaf-line"></i>';
+                document.getElementById('form-subtitle').innerText = 'Sign up to start your journey with us';
+                document.getElementById('name-group').style.display = 'block';
+                document.getElementById('fullname').setAttribute('required', 'true');
+                document.getElementById('forgot-pass').style.display = 'none';
+                document.getElementById('submit-btn').innerHTML = 'Sign Up <i class="ri-arrow-right-line"></i>';
+                document.getElementById('toggle-text').innerHTML = 'Already have an account? <a href="#" onclick="toggleMode(event)">Login</a>';
+            }
+        }
+
+                // --- Handle Form Submission (Connected to SQL Database) ---
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // Show Loading State
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Processing... <i class="ri-loader-4-line ri-spin"></i>';
+            submitBtn.disabled = true;
+            errorMsg.style.display = 'none';
+            
+            try {
+                if(!isLoginMode) {
+                    // --- SIGN UP LOGIC ---
+                    const fullname = document.getElementById('fullname').value.trim();
+                    
+                    const response = await fetch('http://localhost:8000/api/auth/signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fullname, email, password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if(!response.ok) {
+                        throw new Error(data.detail || "Failed to create account");
+                    }
+                    
+                    alert('Account securely created in the SQL Database! Please login with your new credentials.');
+                    toggleMode(); // Switch to login view
+                    
+                } else {
+                    // --- LOGIN LOGIC ---
+                    const response = await fetch('http://localhost:8000/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if(!response.ok) {
+                        throw new Error(data.detail || "Invalid email or password!");
+                    }
+                    
+                    // Success: Store active session and redirect
+                    localStorage.setItem('currentUser', JSON.stringify({ fullname: data.user.fullname, email: data.user.email }));
+                    window.location.href = 'index.html';
+                }
+            } catch (err) {
+                console.error(err);
+                errorMsg.innerText = err.message;
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.innerHTML = originalBtnHtml;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Handle Social Login (OAuth Simulation)
+        function handleSocialLogin(provider) {
+            const modal = document.getElementById('oauth-modal');
+            const icon = document.getElementById('oauth-icon');
+            const title = document.getElementById('oauth-title');
+            const status = document.getElementById('oauth-status');
+
+            // Setup Provider Styles
+            if (provider === 'Google') {
+                icon.className = 'provider-icon ri-google-fill';
+                icon.style.color = '#ea4335';
+            } else if (provider === 'LinkedIn') {
+                icon.className = 'provider-icon ri-linkedin-fill';
+                icon.style.color = '#0a66c2';
+            } else {
+                icon.className = 'provider-icon ri-github-fill';
+                icon.style.color = '#fff';
+            }
+
+            title.innerText = `Sign in with ${provider}`;
+            status.innerText = 'Connecting securely...';
+            status.style.color = '#9ca3af';
+
+            // Show Modal
+            modal.style.display = 'flex';
+            // Force reflow for animation
+            void modal.offsetWidth; 
+            modal.classList.add('show');
+
+            // Simulate OAuth Flow
+            setTimeout(() => {
+                status.innerText = 'Verifying account...';
+                setTimeout(() => {
+                    status.innerText = 'Authentication successful!';
+                    status.style.color = '#8cc460';
+                    
+                    // Create mock user session
+                    localStorage.setItem('currentUser', JSON.stringify({ 
+                        fullname: `User via ${provider}`, 
+                        email: `auth@${provider.toLowerCase()}.com` 
+                    }));
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 800);
+                    
+                }, 1500);
+                        }, 1200);
+        }
+
+        // --- Forgot Password Flow Logic ---
+        let currentResetEmail = '';
+        let generatedOtp = '';
+
+        function openForgotModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('forgot-pwd-modal').style.display = 'flex';
+            void document.getElementById('forgot-pwd-modal').offsetWidth;
+            document.getElementById('forgot-pwd-modal').classList.add('show');
+            
+            document.getElementById('step-email').style.display = 'block';
+            document.getElementById('step-otp').style.display = 'none';
+            document.getElementById('step-new-pwd').style.display = 'none';
+            document.getElementById('forgot-error').style.display = 'none';
+            document.getElementById('forgot-email').value = '';
+            document.getElementById('forgot-otp').value = '';
+            document.getElementById('forgot-new-pwd').value = '';
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgot-pwd-modal').classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('forgot-pwd-modal').style.display = 'none';
+            }, 300);
+        }
+
+                async function sendOtp() {
+            const email = document.getElementById('forgot-email').value.trim();
+            const errorP = document.getElementById('forgot-error');
+            
+            if(!email) {
+                errorP.innerText = 'Please enter your email address.';
+                errorP.style.display = 'block';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('visionnova_users') || '[]');
+            const user = users.find(u => u.email === email);
+            
+            if(!user) {
+                errorP.innerText = 'No account found with this email address.';
+                errorP.style.display = 'block';
+                return;
+            }
+
+            generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            currentResetEmail = email;
+            errorP.style.display = 'none';
+
+            // Show loading state on button
+            const btn = document.querySelector('#step-email button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Sending... <i class="ri-loader-4-line ri-spin"></i>';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:8000/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, otp: generatedOtp })
+                });
+                
+                if(!response.ok) throw new Error("Failed to send email");
+                
+                const data = await response.json();
+                
+                if (data.message.includes("Simulated")) {
+                    alert(`[DEVELOPER MODE: Backend Credentials Not Configured]\n\nAn email WOULD have been sent to ${email}!\nYour 6-digit OTP is: ${generatedOtp}`);
+                } else {
+                    alert(`OTP has been successfully sent to ${email}!\n\nPlease check your inbox (and spam folder).`);
+                }
+            } catch (err) {
+                console.error(err);
+                alert(`[ERROR] Make sure your backend server is running!\n\nFallback OTP for testing: ${generatedOtp}`);
+            }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
+            document.getElementById('step-email').style.display = 'none';
+            document.getElementById('step-otp').style.display = 'block';
+        }
+
+        function verifyOtp() {
+            const enteredOtp = document.getElementById('forgot-otp').value.trim();
+            const errorP = document.getElementById('forgot-error');
+            
+            if(enteredOtp !== generatedOtp) {
+                errorP.innerText = 'Invalid OTP. Please check your email and try again.';
+                errorP.style.display = 'block';
+                return;
+            }
+
+            errorP.style.display = 'none';
+            document.getElementById('step-otp').style.display = 'none';
+            document.getElementById('step-new-pwd').style.display = 'block';
+        }
+
+        function updatePassword() {
+            const newPwd = document.getElementById('forgot-new-pwd').value;
+            const errorP = document.getElementById('forgot-error');
+            
+            if(newPwd.length < 6) {
+                errorP.innerText = 'Password must be at least 6 characters long.';
+                errorP.style.display = 'block';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('visionnova_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === currentResetEmail);
+            
+            if(userIndex > -1) {
+                users[userIndex].password = newPwd;
+                localStorage.setItem('visionnova_users', JSON.stringify(users));
+                
+                alert('Your password has been successfully reset! You can now log in.');
+                closeForgotModal();
+                
+                document.getElementById('email').value = currentResetEmail;
+                document.getElementById('password').value = '';
+            } else {
+                errorP.innerText = 'An unexpected error occurred.';
+                errorP.style.display = 'block';
+            }
+        }
+    </script>
+<script src="theme.js"></script>
+<script src="profile_modal.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

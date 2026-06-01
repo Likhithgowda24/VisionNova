@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="splash_screen.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNova AI - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="assets/app_logo.jpg" alt="VisionNova Logo" style="width: 38px; height: 38px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">
+                <div class="logo-text">
+                    <h2>VisionNova <span style="color: #8cc460;">AI</span></h2>
+                    <p>See Beyond the Data.</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class="ri-home-5-fill"></i> Dashboard</a>
+                <a href="upload_resume.html" class="nav-item active"><i class="ri-file-user-line" style="color: #8cc460;"></i> Upload Resume</a>
+                <a href="job_suggestions.html" class="nav-item"><i class="ri-briefcase-4-line"></i> Job Suggestions</a>
+                <a href="mock_tests.html" class="nav-item"><i class="ri-clipboard-line"></i> Mock Tests</a>
+                <a href="interview_prep.html" class="nav-item"><i class="ri-chat-smile-3-line"></i> Interview Preparation Chatbot</a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar" id="nav-avatar">RV</div>
+                <div class="user-info">
+                    <h4 id="nav-name">Rahul Verma</h4>
+                </div>
+                <i class="ri-arrow-down-s-line" style="color: #6b7280;"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                
+                <div class="header-actions">
+
+                    <button class="icon-btn"><i class="ri-sun-line"></i></button>
+                    <button class="icon-btn" id="logout-btn" title="Exit"><i class="ri-logout-box-r-line"></i></button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-body" style="height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden; padding-bottom: 40px;">
+                
+                <!-- Hidden File Input -->
+                <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx">
+                
+                <!-- Container for Centering -->
+                <div style="display: flex; justify-content: center; align-items: center; min-height: 100%; width: 100%;">
+                    
+                    <!-- STATE 1: Upload Card -->
+                    <div id="upload-state" class="upload-page-card" style="background: rgba(4, 6, 4, 0.6); border: 2px dashed rgba(140, 196, 96, 0.4); border-radius: 20px; padding: 70px 50px; text-align: center; width: 100%; max-width: 650px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px); transition: all 0.3s ease;">
+                        
+                        <div class="upload-icon" style="width: 100px; height: 100px; margin: 0 auto 35px; border-width: 2px; display: flex; align-items: center; justify-content: center;">
+                            <img src="assets/app_logo.jpg" alt="Logo" style="width: 75px; height: 75px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">
+                        </div>
+                        
+                        <h2 style="font-size: 32px; color: #fff; font-weight: 500; margin-bottom: 15px;">Drag & Drop your Resume</h2>
+                        <p style="font-size: 16px; color: #9ca3af; margin-bottom: 45px;">or click the button below to browse files from your device</p>
+                        
+                        <button id="select-btn" class="upload-btn" style="padding: 20px 50px; font-size: 16px; margin-bottom: 40px;">Select File <i class="ri-folder-open-line"></i></button>
+                        
+                        <div class="security-badge" style="margin-top: 0; transform: none; display: inline-flex; align-self: center;">
+                            <i class="ri-shield-check-line"></i> Your data is secure and confidential <span class="dot"></span>
+                        </div>
+                        <span class="supported-formats" style="margin-top: 25px; display: block;">Supported formats: PDF, DOCX (Max 10MB)</span>
+                    </div>
+
+                    <!-- STATE 2: File Ready -->
+                    <div id="ready-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(140, 196, 96, 0.4); border-radius: 20px; padding: 60px 50px; text-align: center; width: 100%; max-width: 500px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px);">
+                        <div style="width: 80px; height: 80px; background: rgba(140,196,96,0.1); border: 1px solid rgba(140,196,96,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #8cc460; font-size: 36px; box-shadow: 0 0 20px rgba(140,196,96,0.2);">
+                            <i class="ri-file-pdf-2-line"></i>
+                        </div>
+                        <h3 id="filename-display" style="color: #fff; font-size: 20px; font-weight: 500; margin-bottom: 5px;">resume.pdf</h3>
+                        <p style="color: #9ca3af; font-size: 14px; margin-bottom: 30px;">File successfully attached.</p>
+                        <button onclick="analyzeResume()" class="upload-btn" style="padding: 16px 40px; font-size: 16px; width: 100%; justify-content: center;">Initialize Analysis <i class="ri-magic-line" style="margin-left: 8px;"></i></button>
+                        <a href="#" onclick="resetUpload(event)" style="display: block; margin-top: 20px; color: #6b7280; font-size: 14px; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#6b7280'">Cancel</a>
+                    </div>
+
+                    <!-- STATE 3: Analyzing -->
+                    <div id="analyzing-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 80px 50px; text-align: center; width: 100%; max-width: 500px; backdrop-filter: blur(12px);">
+                        <div class="loader" style="width: 60px; height: 60px; border-width: 4px; border-color: rgba(140,196,96,0.2); border-top-color: #8cc460; margin: 0 auto 30px;"></div>
+                        <h2 style="color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 10px;">VisionNova is Analyzing...</h2>
+                        <p style="color: #8cc460; font-size: 15px; animation: pulse 1.5s infinite;">Extracting keywords and calculating ATS score</p>
+                    </div>
+
+                    <!-- STATE 4: Results Dashboard -->
+                    <div id="results-state" style="display: none; width: 100%; max-width: 900px; flex-direction: column; gap: 24px; padding: 20px 0; margin: 0 auto; animation: fadeIn 0.5s ease-out;">
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2 style="color: #fff; font-size: 28px; font-weight: 600;">Resume Analysis Report</h2>
+                            <button onclick="resetUpload(event)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Upload Another</button>
+                        </div>
+
+                        <!-- Score & Keywords Row -->
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+                            <!-- ATS Score Card -->
+                            <div style="background: rgba(4,6,4,0.6); border: 1px solid rgba(140,196,96,0.3); border-radius: 16px; padding: 30px; text-align: center; backdrop-filter: blur(12px); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 30px rgba(140,196,96,0.05);">
+                                <h3 style="color: #9ca3af; font-size: 15px; font-weight: 500; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;">Overall ATS Score</h3>
+                                <div id="score-ring" style="position: relative; width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(#8cc460 0%, rgba(255,255,255,0.05) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(140,196,96,0.2); transition: background 1s ease;">
+                                    <div style="position: absolute; width: 116px; height: 116px; background: #0b110b; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                        <span id="score-display" style="color: #fff; font-size: 38px; font-weight: 700; line-height: 1;">--</span>
+                                        <span style="color: #9ca3af; font-size: 13px; margin-top: 2px;">/ 100</span>
+                                    </div>
+                                </div>
+                                <p style="color: #8cc460; margin-top: 25px; font-weight: 500; font-size: 15px;">Good, but needs polish <i class="ri-arrow-up-line"></i></p>
+                            </div>
+                            
+                            <!-- Missing Keywords -->
+                            <div style="background: rgba(4,6,4,0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 30px; backdrop-filter: blur(12px);">
+                                <h3 style="color: #fff; font-size: 18px; font-weight: 500; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="ri-key-2-line" style="color: #eab308; font-size: 20px;"></i> Missing Keywords</h3>
+                                <p style="color: #9ca3af; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Adding these industry-specific keywords will significantly boost your visibility to ATS systems and recruiters.</p>
+                                <div id="missing-keywords-container" style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Strengths & Weaknesses Row -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <!-- Strengths -->
+                            <div style="background: rgba(4,6,4,0.6); border: 1px solid rgba(140,196,96,0.2); border-radius: 16px; padding: 30px; backdrop-filter: blur(12px);">
+                                <h3 style="color: #8cc460; font-size: 18px; font-weight: 500; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;"><i class="ri-thumb-up-line" style="font-size: 20px;"></i> Strengths</h3>
+                                <ul id="strengths-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px;">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+                            
+                            <!-- Weaknesses -->
+                            <div style="background: rgba(4,6,4,0.6); border: 1px solid rgba(239,68,68,0.2); border-radius: 16px; padding: 30px; backdrop-filter: blur(12px);">
+                                <h3 style="color: #ef4444; font-size: 18px; font-weight: 500; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;"><i class="ri-error-warning-line" style="font-size: 20px;"></i> Areas to Improve</h3>
+                                <ul id="weaknesses-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px;">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Actionable Advice -->
+                        <div style="background: rgba(4,6,4,0.6); border: 1px solid rgba(59,130,246,0.3); border-radius: 16px; padding: 30px; backdrop-filter: blur(12px);">
+                            <h3 style="color: #fff; font-size: 18px; font-weight: 500; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;"><i class="ri-lightbulb-flash-line" style="color: #3b82f6; font-size: 22px;"></i> AI Recommendation</h3>
+                            <p id="ai-advice-text" style="color: #d1d5db; font-size: 15px; line-height: 1.7;">Analyzing...</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Auth Check (Bypassed for viewing design)
+        const currentUserStr = localStorage.getItem('currentUser');
+        if (currentUserStr) {
+            try {
+                const currentUser = JSON.parse(currentUserStr);
+                document.getElementById('nav-name').textContent = currentUser.fullname || 'User';
+                
+                if (currentUser.fullname) {
+                    const parts = currentUser.fullname.split(' ');
+                    let initials = '';
+                    if (parts.length > 1) {
+                        initials = parts[0][0] + parts[parts.length-1][0];
+                    } else {
+                        initials = parts[0].substring(0, 2);
+                    }
+                    document.getElementById('nav-avatar').textContent = initials.toUpperCase();
+
+                    // Update main welcome heading with user's first name
+                    const firstName = parts[0];
+                    document.getElementById('welcome-text').innerHTML = `Welcome back, ${firstName} <img src="assets/app_logo.jpg" alt="Logo" style="width: 1.4em; height: 1.4em; vertical-align: middle; margin-left: 8px; margin-bottom: -2px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">`;
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if(confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Resume Upload & Analysis Flow
+        let uploadedFileText = "";
+        
+        // Initialize PDF.js worker
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        if(pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+
+        const fileInput = document.getElementById('file-input');
+        const selectBtn = document.getElementById('select-btn');
+        const uploadState = document.getElementById('upload-state');
+        const readyState = document.getElementById('ready-state');
+        const analyzingState = document.getElementById('analyzing-state');
+        const resultsState = document.getElementById('results-state');
+        const filenameDisplay = document.getElementById('filename-display');
+
+        // Open file explorer on click
+        selectBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Handle file selection and read PDF/DOCX text
+        fileInput.addEventListener('change', async (e) => {
+            if(e.target.files.length > 0) {
+                const file = e.target.files[0];
+                filenameDisplay.innerText = file.name;
+                uploadState.style.display = 'none';
+                readyState.style.display = 'block';
+                
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Read PDF
+                    if (file.type === "application/pdf" && pdfjsLib) {
+                        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                        let text = "";
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            const strings = content.items.map(item => item.str);
+                            text += strings.join(" ") + " ";
+                        }
+                        uploadedFileText = text;
+                    } 
+                    // Read DOCX
+                    else if (file.name.toLowerCase().endsWith('.docx') && window.mammoth) {
+                        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                        uploadedFileText = result.value;
+                    } 
+                    // Fallback
+                    else {
+                        uploadedFileText = "Fallback: File is not a supported format. Please upload a PDF or DOCX file.";
+                        alert("For best results, please upload a PDF or DOCX file. Older .doc files may not parse correctly.");
+                    }
+                } catch(err) {
+                    console.error("File parsing failed:", err);
+                    uploadedFileText = "Error reading file. Proceeding with fallback analysis.";
+                    alert("There was an error reading your file text. The analysis may not be fully accurate.");
+                }
+            }
+        });
+
+        // Initialize Analysis (Connect to FastAPI Backend)
+        window.analyzeResume = async function() {
+            readyState.style.display = 'none';
+            analyzingState.style.display = 'block';
+            
+            try {
+                // Send extracted text to our FastAPI backend which talks to Ollama
+                const response = await fetch('http://localhost:8000/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: uploadedFileText })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Backend returned an error. Ensure FastAPI and Ollama are running.");
+                }
+
+                const data = await response.json();
+                
+                // Update UI with real LLM data
+                const actualScore = data.score;
+                document.getElementById('score-display').innerText = actualScore;
+                
+                // Dynamically update the score ring visual to match the exact score
+                let color = "#8cc460"; // Green for good
+                if(actualScore < 50) color = "#ef4444"; // Red for bad
+                else if(actualScore < 75) color = "#eab308"; // Yellow for medium
+                
+                document.getElementById('score-ring').style.background = `conic-gradient(${color} ${actualScore}%, rgba(255,255,255,0.05) 0)`;
+                
+                const missingHTML = data.missing_keywords.slice(0, 5).map(s => `<span style="background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; text-transform: capitalize;">${s}</span>`).join('');
+                document.getElementById('missing-keywords-container').innerHTML = missingHTML;
+                
+                document.getElementById('strengths-list').innerHTML = data.strengths.map(s => `<li style="color: #d1d5db; font-size: 14.5px; display: flex; align-items: flex-start; gap: 12px; line-height: 1.5;"><i class="ri-checkbox-circle-fill" style="color: #8cc460; margin-top: 2px; font-size: 18px;"></i><span>${s}</span></li>`).join('');
+                document.getElementById('weaknesses-list').innerHTML = data.weaknesses.map(w => `<li style="color: #d1d5db; font-size: 14.5px; display: flex; align-items: flex-start; gap: 12px; line-height: 1.5;"><i class="ri-close-circle-fill" style="color: #ef4444; margin-top: 2px; font-size: 18px;"></i><span>${w}</span></li>`).join('');
+                
+                document.getElementById('ai-advice-text').innerText = data.advice;
+                
+                analyzingState.style.display = 'none';
+                resultsState.style.display = 'flex';
+                
+            } catch (error) {
+                console.error("Error calling backend:", error);
+                alert("Connection failed! Make sure you start the Python backend (uvicorn main:app --reload) and that Ollama is running.");
+                resetUpload();
+            }
+        };
+
+        // Reset to initial upload state
+        window.resetUpload = function(e) {
+            if(e) e.preventDefault();
+            fileInput.value = ''; // clear file
+            uploadedFileText = '';
+            resultsState.style.display = 'none';
+            readyState.style.display = 'none';
+            analyzingState.style.display = 'none';
+            uploadState.style.display = 'block';
+        };
+
+    </script>
+    
+    <style>
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<script src="theme.js"></script>
+<script src="profile_modal.js"></script>
+</body>
+</html>
+
+
+
+
+

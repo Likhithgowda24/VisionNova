@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="splash_screen.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNova AI - Mock Tests</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="assets/app_logo.jpg" alt="VisionNova Logo" style="width: 38px; height: 38px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">
+                <div class="logo-text">
+                    <h2>VisionNova <span style="color: #8cc460;">AI</span></h2>
+                    <p>See Beyond the Data.</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class="ri-home-5-fill"></i> Dashboard</a>
+                <a href="upload_resume.html" class="nav-item"><i class="ri-file-user-line"></i> Upload Resume</a>
+                <a href="job_suggestions.html" class="nav-item"><i class="ri-briefcase-4-line"></i> Job Suggestions</a>
+                <a href="mock_tests.html" class="nav-item active"><i class="ri-clipboard-fill" style="color: #8cc460;"></i> Mock Tests</a>
+                <a href="interview_prep.html" class="nav-item"><i class="ri-chat-smile-3-line"></i> Interview Preparation Chatbot</a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar" id="nav-avatar">RV</div>
+                <div class="user-info">
+                    <h4 id="nav-name">Rahul Verma</h4>
+                </div>
+                <i class="ri-arrow-down-s-line" style="color: #6b7280;"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                
+                <div class="header-actions">
+
+                    <button class="icon-btn"><i class="ri-sun-line"></i></button>
+                    <button class="icon-btn" id="logout-btn" title="Exit"><i class="ri-logout-box-r-line"></i></button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" style="height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden; padding-bottom: 40px;">
+                
+                <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx">
+                
+                <div style="display: flex; justify-content: center; align-items: flex-start; padding-top: 5vh; min-height: 100%; width: 100%;">
+                    
+                    <!-- STATE 1: Setup Form -->
+                    <div id="setup-state" class="upload-page-card" style="background: rgba(4, 6, 4, 0.6); border: 2px dashed rgba(140, 196, 96, 0.4); border-radius: 20px; padding: 50px; text-align: center; width: 100%; max-width: 650px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px);">
+                        <h2 style="font-size: 28px; color: #fff; font-weight: 500; margin-bottom: 10px;">AI Technical Mock Interview</h2>
+                        <p style="font-size: 15px; color: #9ca3af; margin-bottom: 30px;">Upload your resume and paste the job description to generate a personalized technical test.</p>
+                        
+                        <!-- Resume Upload -->
+                        <div id="upload-box" style="margin-bottom: 25px; padding: 30px; border: 1px solid rgba(140, 196, 96, 0.3); border-radius: 12px; background: rgba(140, 196, 96, 0.05); cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('file-input').click()">
+                            <i class="ri-upload-cloud-2-line" style="font-size: 30px; color: #8cc460; margin-bottom: 10px; display: block;"></i>
+                            <h4 id="filename-display" style="color: #fff; margin-bottom: 5px;">Click to upload Resume</h4>
+                            <span style="color: #6b7280; font-size: 13px;">PDF or DOCX</span>
+                        </div>
+                        
+                        <!-- Job Description -->
+                        <div style="text-align: left; margin-bottom: 30px;">
+                            <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">Target Job Description</label>
+                            <textarea id="job-description" rows="5" placeholder="Paste the exact job description here (responsibilities, requirements, etc.)..." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 15px; border-radius: 12px; width: 100%; outline: none; font-size: 14px; resize: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(140,196,96,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+                        </div>
+
+                        <button id="start-test-btn" class="upload-btn" style="width: 100%; justify-content: center; padding: 16px; opacity: 0.5; cursor: not-allowed;" disabled>
+                            Start Test <i class="ri-play-circle-line" style="margin-left: 8px;"></i>
+                        </button>
+                    </div>
+
+                    <!-- STATE 2: Generating -->
+                    <div id="generating-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 80px 50px; text-align: center; width: 100%; max-width: 500px; backdrop-filter: blur(12px);">
+                        <div class="loader" style="width: 60px; height: 60px; border-width: 4px; border-color: rgba(140,196,96,0.2); border-top-color: #8cc460; margin: 0 auto 30px;"></div>
+                        <h2 style="color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 10px;">Generating Your Test...</h2>
+                        <p style="color: #8cc460; font-size: 15px; animation: pulse 1.5s infinite;">Analyzing overlaps between your resume and the JD...</p>
+                    </div>
+
+                    <!-- STATE 3: Test Active -->
+                    <div id="test-state" style="display: none; width: 100%; max-width: 800px; animation: fadeIn 0.5s ease-out;">
+                        <h2 style="color: #fff; font-size: 28px; font-weight: 600; margin-bottom: 10px;">Technical Assessment</h2>
+                        <p style="color: #9ca3af; margin-bottom: 30px;">Answer the following personalized interview questions as thoroughly as possible.</p>
+                        
+                        <div id="questions-container" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Questions injected here -->
+                        </div>
+                        
+                        <button onclick="submitTest()" class="upload-btn" style="width: 100%; justify-content: center; padding: 18px; margin-top: 30px; font-size: 16px;">
+                            Submit Test Answers <i class="ri-check-double-line" style="margin-left: 8px;"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- STATE 4: Evaluating -->
+                    <div id="evaluating-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 80px 50px; text-align: center; width: 100%; max-width: 500px; backdrop-filter: blur(12px);">
+                        <div class="loader" style="width: 60px; height: 60px; border-width: 4px; border-color: rgba(140,196,96,0.2); border-top-color: #8cc460; margin: 0 auto 30px;"></div>
+                        <h2 style="color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 10px;">Evaluating Your Answers...</h2>
+                        <p style="color: #8cc460; font-size: 15px; animation: pulse 1.5s infinite;">Grading accuracy and completeness...</p>
+                    </div>
+
+                    <!-- STATE 5: Results -->
+                    <div id="results-state" style="display: none; width: 100%; max-width: 800px; animation: fadeIn 0.5s ease-out;">
+                        <div style="background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(140, 196, 96, 0.3); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 30px; backdrop-filter: blur(12px);">
+                            <h2 style="color: #9ca3af; font-size: 18px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Assessment Score</h2>
+                            <div style="font-size: 64px; color: #8cc460; font-weight: 700; line-height: 1;"><span id="total-score">0</span><span style="font-size: 32px; color: #6b7280;">/100</span></div>
+                        </div>
+                        
+                        <h3 style="color: #fff; font-size: 22px; margin-bottom: 20px;">Detailed Evaluation</h3>
+                        <div id="evaluations-container" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Evaluations injected here -->
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 40px;">
+                            <button onclick="location.reload()" class="upload-btn" style="padding: 15px 40px;">Take Another Test</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const currentUserStr = localStorage.getItem('currentUser');
+        if (currentUserStr) {
+            try {
+                const currentUser = JSON.parse(currentUserStr);
+                document.getElementById('nav-name').textContent = currentUser.fullname || 'User';
+                if (currentUser.fullname) {
+                    const parts = currentUser.fullname.split(' ');
+                    document.getElementById('nav-avatar').textContent = (parts[0][0] + (parts.length > 1 ? parts[parts.length-1][0] : '')).toUpperCase();
+                }
+            } catch(e) {}
+        }
+
+        let uploadedFileText = "";
+        let generatedQuestions = [];
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        if(pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        const fileInput = document.getElementById('file-input');
+        const jobDescInput = document.getElementById('job-description');
+        const startBtn = document.getElementById('start-test-btn');
+        const filenameDisplay = document.getElementById('filename-display');
+
+        function checkInputs() {
+            if(uploadedFileText.length > 0 && jobDescInput.value.trim().length > 10) {
+                startBtn.style.opacity = '1';
+                startBtn.style.cursor = 'pointer';
+                startBtn.disabled = false;
+            } else {
+                startBtn.style.opacity = '0.5';
+                startBtn.style.cursor = 'not-allowed';
+                startBtn.disabled = true;
+            }
+        }
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                filenameDisplay.textContent = file.name;
+                document.getElementById('upload-box').style.borderColor = '#8cc460';
+                
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (file.type === "application/pdf" && pdfjsLib) {
+                        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                        let text = "";
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(" ") + " ";
+                        }
+                        uploadedFileText = text;
+                    } else if (file.name.toLowerCase().endsWith('.docx') && window.mammoth) {
+                        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                        uploadedFileText = result.value;
+                    }
+                    checkInputs();
+                } catch(err) {
+                    console.error("Error reading file:", err);
+                    alert("Could not read file. Please try again.");
+                }
+            }
+        });
+
+        jobDescInput.addEventListener('input', checkInputs);
+
+        startBtn.addEventListener('click', async () => {
+            document.getElementById('setup-state').style.display = 'none';
+            document.getElementById('generating-state').style.display = 'block';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/mock-test/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        resume_text: uploadedFileText,
+                        job_description: jobDescInput.value.trim()
+                    })
+                });
+
+                if (!response.ok) throw new Error("Backend error");
+                const data = await response.json();
+                generatedQuestions = data.questions;
+                
+                const qContainer = document.getElementById('questions-container');
+                qContainer.innerHTML = generatedQuestions.map((q, i) => `
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 25px;">
+                        <h4 style="color: #fff; font-size: 16px; margin-bottom: 15px; line-height: 1.5;"><span style="color: #8cc460;">Q${i+1}.</span> ${q}</h4>
+                        <textarea id="answer-${i}" rows="4" placeholder="Type your answer here..." style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; padding: 15px; border-radius: 8px; width: 100%; outline: none; font-size: 14px; resize: vertical; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(140,196,96,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+                    </div>
+                `).join('');
+                
+                document.getElementById('generating-state').style.display = 'none';
+                document.getElementById('test-state').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                alert("Failed to generate test.");
+                document.getElementById('generating-state').style.display = 'none';
+                document.getElementById('setup-state').style.display = 'block';
+            }
+        });
+
+        window.submitTest = async function() {
+            const userAnswers = generatedQuestions.map((_, i) => document.getElementById(`answer-${i}`).value.trim());
+            
+            document.getElementById('test-state').style.display = 'none';
+            document.getElementById('evaluating-state').style.display = 'block';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/mock-test/evaluate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        questions: generatedQuestions,
+                        user_answers: userAnswers
+                    })
+                });
+
+                if (!response.ok) throw new Error("Backend error");
+                const data = await response.json();
+                
+                document.getElementById('total-score').textContent = data.total_score;
+                
+                const eContainer = document.getElementById('evaluations-container');
+                eContainer.innerHTML = data.evaluations.map((eval, i) => `
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid ${eval.is_correct ? 'rgba(140,196,96,0.3)' : 'rgba(239,68,68,0.3)'}; border-left: 4px solid ${eval.is_correct ? '#8cc460' : '#ef4444'}; border-radius: 12px; padding: 25px;">
+                        <h4 style="color: #fff; font-size: 16px; margin-bottom: 15px; line-height: 1.5;"><span style="color: #8cc460;">Q${i+1}.</span> ${generatedQuestions[i]}</h4>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <span style="color: #9ca3af; font-size: 12px; text-transform: uppercase;">Your Answer:</span>
+                            <p style="color: #d1d5db; font-size: 14px; margin-top: 5px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">${userAnswers[i] || '<em>No answer provided</em>'}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <span style="color: ${eval.is_correct ? '#8cc460' : '#ef4444'}; font-size: 12px; text-transform: uppercase;">Feedback:</span>
+                            <p style="color: #fff; font-size: 14px; margin-top: 5px;">${eval.feedback}</p>
+                        </div>
+                        
+                        ${!eval.is_correct ? `
+                        <div>
+                            <span style="color: #8cc460; font-size: 12px; text-transform: uppercase;"><i class="ri-check-line"></i> Ideal Answer:</span>
+                            <p style="color: #d1d5db; font-size: 14px; margin-top: 5px; border-left: 2px solid #8cc460; padding-left: 10px;">${eval.ideal_answer}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+                document.getElementById('evaluating-state').style.display = 'none';
+                document.getElementById('results-state').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                alert("Failed to evaluate test.");
+                document.getElementById('evaluating-state').style.display = 'none';
+                document.getElementById('test-state').style.display = 'block';
+            }
+        };
+    </script>
+<script src="theme.js"></script>
+<script src="profile_modal.js"></script>
+</body>
+</html>
+
+
+
+
+

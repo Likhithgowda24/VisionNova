@@ -1,0 +1,20 @@
+{
+    "name":  "visionnova",
+    "version":  "1.0.0",
+    "description":  "",
+    "main":  "profile_modal.js",
+    "scripts":  {
+                    "backend":  "cd backend \u0026\u0026 python -m uvicorn main:app --reload --port 8000",
+                    "frontend":  "http-server . -p 3000 -c-1",
+                    "dev":  "concurrently \"npm run backend\" \"npm run frontend\""
+                },
+    "keywords":  [
+
+                 ],
+    "author":  "",
+    "license":  "ISC",
+    "devDependencies":  {
+                            "concurrently":  "^10.0.1",
+                            "http-server":  "^14.1.1"
+                        }
+}

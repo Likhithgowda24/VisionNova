@@ -1,0 +1,16 @@
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+env/
+venv/
+
+# Database (Do NOT push user data to GitHub!)
+*.db
+visionnova.db
+
+# OS Files
+.DS_Store
+Thumbs.db

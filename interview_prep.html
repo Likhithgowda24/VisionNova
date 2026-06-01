@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="splash_screen.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNova AI - Interview Preparation Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        .avatar-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 4px solid rgba(140, 196, 96, 0.3);
+            box-shadow: 0 0 30px rgba(140, 196, 96, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #000;
+        }
+
+        .avatar-layer {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-wrapper.speaking {
+            border-color: #8cc460;
+            box-shadow: 0 0 60px rgba(140, 196, 96, 0.6), inset 0 0 20px rgba(140, 196, 96, 0.5);
+            animation: pulse-glow 1.5s infinite alternate;
+        }
+
+        .visualizer-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .waveform {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 80px;
+            opacity: 0.2;
+            transition: opacity 0.3s ease;
+        }
+
+        .waveform.active {
+            opacity: 1;
+        }
+
+        .bar {
+            width: 6px;
+            height: 6px;
+            background: #8cc460;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(140, 196, 96, 0.6);
+            transition: height 0.12s ease;
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 30px rgba(140, 196, 96, 0.3); }
+            100% { box-shadow: 0 0 80px rgba(140, 196, 96, 0.8); }
+        }
+
+        .mic-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0 auto;
+        }
+
+        .mic-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .mic-btn.listening {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .chat-log {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-msg.agent {
+            background: rgba(140, 196, 96, 0.15);
+            color: #d1d5db;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-msg.user {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="assets/app_logo.jpg" alt="VisionNova Logo" style="width: 38px; height: 38px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">
+                <div class="logo-text">
+                    <h2>VisionNova <span style="color: #8cc460;">AI</span></h2>
+                    <p>See Beyond the Data.</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class="ri-home-5-fill"></i> Dashboard</a>
+                <a href="upload_resume.html" class="nav-item"><i class="ri-file-user-line"></i> Upload Resume</a>
+                <a href="job_suggestions.html" class="nav-item"><i class="ri-briefcase-4-line"></i> Job Suggestions</a>
+                <a href="mock_tests.html" class="nav-item"><i class="ri-clipboard-line"></i> Mock Tests</a>
+                <a href="interview_prep.html" class="nav-item active"><i class="ri-chat-smile-3-fill" style="color: #8cc460;"></i> Interview Preparation Chatbot</a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar" id="nav-avatar">RV</div>
+                <div class="user-info">
+                    <h4 id="nav-name">Rahul Verma</h4>
+                </div>
+                <i class="ri-arrow-down-s-line" style="color: #6b7280;"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                
+                <div class="header-actions">
+
+                    <button class="icon-btn"><i class="ri-sun-line"></i></button>
+                    <button class="icon-btn" id="logout-btn" title="Exit"><i class="ri-logout-box-r-line"></i></button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" style="height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden; padding-bottom: 40px;">
+                
+                <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx">
+                
+                <div style="display: flex; justify-content: center; align-items: flex-start; padding-top: 5vh; min-height: 100%; width: 100%;">
+                    
+                    <!-- STATE 1: Setup Form -->
+                    <div id="setup-state" class="upload-page-card" style="background: rgba(4, 6, 4, 0.6); border: 2px dashed rgba(140, 196, 96, 0.4); border-radius: 20px; padding: 50px; text-align: center; width: 100%; max-width: 650px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px);">
+                        <h2 style="font-size: 28px; color: #fff; font-weight: 500; margin-bottom: 10px;">Live HR Interview Simulator</h2>
+                        <p style="font-size: 15px; color: #9ca3af; margin-bottom: 30px;">Practice your communication skills with VisionNova, your personal AI recruiter.</p>
+                        
+                        <!-- Resume Upload -->
+                        <div id="upload-box" style="margin-bottom: 25px; padding: 30px; border: 1px solid rgba(140, 196, 96, 0.3); border-radius: 12px; background: rgba(140, 196, 96, 0.05); cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('file-input').click()">
+                            <i class="ri-upload-cloud-2-line" style="font-size: 30px; color: #8cc460; margin-bottom: 10px; display: block;"></i>
+                            <h4 id="filename-display" style="color: #fff; margin-bottom: 5px;">Click to upload Resume</h4>
+                            <span style="color: #6b7280; font-size: 13px;">PDF or DOCX</span>
+                        </div>
+                        
+                        <!-- Job Title -->
+                        <div style="text-align: left; margin-bottom: 30px;">
+                            <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">Target Job Title</label>
+                            <input type="text" id="job-title" placeholder="e.g., Senior Full Stack Developer" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 15px; border-radius: 12px; width: 100%; outline: none; font-size: 14px; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(140,196,96,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                        </div>
+
+                        <button id="start-interview-btn" class="upload-btn" style="width: 100%; justify-content: center; padding: 16px; opacity: 0.5; cursor: not-allowed;" disabled>
+                            Connect to VisionNova <i class="ri-customer-service-2-line" style="margin-left: 8px;"></i>
+                        </button>
+                    </div>
+
+                    <!-- STATE 2: Connecting -->
+                    <div id="connecting-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 80px 50px; text-align: center; width: 100%; max-width: 500px; backdrop-filter: blur(12px);">
+                        <div class="loader" style="width: 60px; height: 60px; border-width: 4px; border-color: rgba(140,196,96,0.2); border-top-color: #8cc460; margin: 0 auto 30px;"></div>
+                        <h2 style="color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 10px;">Connecting to Agent...</h2>
+                        <p style="color: #8cc460; font-size: 15px; animation: pulse 1.5s infinite;">VisionNova is reviewing your resume...</p>
+                    </div>
+
+                    <!-- STATE 3: Interview Active -->
+                    <div id="interview-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(140, 196, 96, 0.3); border-radius: 20px; padding: 40px; text-align: center; width: 100%; max-width: 700px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px);">
+                        
+                        <div class="visualizer-container">
+                            <!-- Left Waveform -->
+                            <div class="waveform" id="wave-left">
+                                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                            </div>
+                            
+                            <div id="agent-wrapper" class="avatar-wrapper">
+                                <img src="assets/visionnova_agent.png" class="avatar-layer" alt="VisionNova Agent">
+                            </div>
+
+                            <!-- Right Waveform -->
+                            <div class="waveform" id="wave-right">
+                                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                            </div>
+                        </div>
+                        
+                        <h2 style="color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 5px;">VisionNova</h2>
+                        <p style="color: #8cc460; font-size: 14px; margin-bottom: 30px;">AI HR Recruiter</p>
+                        
+                        <div id="chat-log" class="chat-log">
+                            <!-- Messages go here -->
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%; align-items: center;">
+                            <button id="mic-btn" class="mic-btn" style="width: 60px; height: 60px; flex-shrink: 0; margin: 0; position: relative;">
+                                <i class="ri-mic-line"></i>
+                            </button>
+                            <input type="text" id="text-input" placeholder="Speak into mic OR type your answer here..." style="flex-grow: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 18px; border-radius: 12px; outline: none; font-size: 15px; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(140,196,96,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeypress="if(event.key==='Enter') document.getElementById('send-btn').click();">
+                            <button id="send-btn" class="upload-btn" style="padding: 16px 25px; flex-shrink: 0;"><i class="ri-send-plane-fill"></i></button>
+                        </div>
+                        <p id="mic-status" style="color: #9ca3af; font-size: 13px; margin-top: 10px; text-align: left;">Click the microphone to speak, or type your answer.</p>
+                        
+                        <button onclick="endInterview()" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 30px; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">End Interview</button>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const currentUserStr = localStorage.getItem('currentUser');
+        if (currentUserStr) {
+            try {
+                const currentUser = JSON.parse(currentUserStr);
+                document.getElementById('nav-name').textContent = currentUser.fullname || 'User';
+                if (currentUser.fullname) {
+                    const parts = currentUser.fullname.split(' ');
+                    document.getElementById('nav-avatar').textContent = (parts[0][0] + (parts.length > 1 ? parts[parts.length-1][0] : '')).toUpperCase();
+                }
+            } catch(e) {}
+        }
+
+        let uploadedFileText = "";
+        let chatHistory = [];
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        if(pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        const fileInput = document.getElementById('file-input');
+        const jobTitleInput = document.getElementById('job-title');
+        const startBtn = document.getElementById('start-interview-btn');
+        const filenameDisplay = document.getElementById('filename-display');
+        const chatLog = document.getElementById('chat-log');
+        const agentWrapper = document.getElementById('agent-wrapper');
+        const micBtn = document.getElementById('mic-btn');
+        const micStatus = document.getElementById('mic-status');
+        const textInput = document.getElementById('text-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Web Speech API
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const synth = window.speechSynthesis;
+        let recognition = null;
+        let selectedVoice = null;
+        
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true; // Keep listening until clicked again
+            recognition.interimResults = true; // Show live text
+            recognition.lang = 'en-US';
+            
+            let finalTranscript = '';
+            
+            recognition.onstart = () => {
+                micBtn.classList.add('listening');
+                micBtn.innerHTML = '<i class="ri-mic-fill"></i>';
+                micStatus.textContent = "Listening... (Click mic again to send)";
+                textInput.placeholder = "Listening...";
+                finalTranscript = '';
+                textInput.value = '';
+            };
+            
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                textInput.value = finalTranscript + interimTranscript;
+            };
+            
+            recognition.onerror = (event) => {
+                micStatus.textContent = "Mic Error: " + event.error;
+                micBtn.classList.remove('listening');
+                micBtn.innerHTML = '<i class="ri-mic-line"></i>';
+                alert("Speech Recognition Error: " + event.error + "\n\nIf you see 'not-allowed', your browser is blocking microphone access. Please click the camera/mic icon in your URL bar and click 'Allow'. If you are using a browser other than Chrome/Edge, it might not be supported.");
+            };
+            
+            recognition.onend = () => {
+                micBtn.classList.remove('listening');
+                micBtn.innerHTML = '<i class="ri-mic-line"></i>';
+                micStatus.textContent = "Click microphone to speak.";
+                textInput.placeholder = "Speak into mic OR type your answer here...";
+                
+                if (textInput.value.trim().length > 0) {
+                    document.getElementById('send-btn').click();
+                }
+            };
+        } else {
+            micStatus.textContent = "Speech Recognition not supported in this browser.";
+        }
+        
+        function loadVoices() {
+            const voices = synth.getVoices();
+            
+            // Prioritize high-quality, sweet-sounding neural voices available in Chrome/Edge
+            const preferredVoices = [
+                'Microsoft Aria Online (Natural)',
+                'Microsoft Jenny Online (Natural)', 
+                'Microsoft Sonia Online (Natural)',
+                'Google US English',
+                'Google UK English Female',
+                'Samantha',
+                'Victoria',
+                'Microsoft Zira'
+            ];
+            
+            for (let pref of preferredVoices) {
+                const found = voices.find(v => v.name.includes(pref));
+                if (found) {
+                    selectedVoice = found;
+                    break;
+                }
+            }
+            
+            if (!selectedVoice) {
+                selectedVoice = voices.find(v => v.name.includes('Female')) || voices[0];
+            }
+        }
+        
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        function checkInputs() {
+            if(uploadedFileText.length > 0 && jobTitleInput.value.trim().length > 3) {
+                startBtn.style.opacity = '1';
+                startBtn.style.cursor = 'pointer';
+                startBtn.disabled = false;
+            } else {
+                startBtn.style.opacity = '0.5';
+                startBtn.style.cursor = 'not-allowed';
+                startBtn.disabled = true;
+            }
+        }
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                filenameDisplay.textContent = file.name;
+                document.getElementById('upload-box').style.borderColor = '#8cc460';
+                
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (file.type === "application/pdf" && pdfjsLib) {
+                        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                        let text = "";
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(" ") + " ";
+                        }
+                        uploadedFileText = text;
+                    } else if (file.name.toLowerCase().endsWith('.docx') && window.mammoth) {
+                        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                        uploadedFileText = result.value;
+                    }
+                    checkInputs();
+                } catch(err) {
+                    console.error("Error reading file:", err);
+                    alert("Could not read file.");
+                }
+            }
+        });
+
+        jobTitleInput.addEventListener('input', checkInputs);
+
+        startBtn.addEventListener('click', async () => {
+            document.getElementById('setup-state').style.display = 'none';
+            document.getElementById('connecting-state').style.display = 'block';
+            
+            // Initial greeting trigger
+            await sendToAgent(""); 
+            
+            document.getElementById('connecting-state').style.display = 'none';
+            document.getElementById('interview-state').style.display = 'block';
+        });
+
+        micBtn.addEventListener('click', async () => {
+            if(recognition) {
+                if(micBtn.classList.contains('listening')) {
+                    recognition.stop();
+                } else {
+                    if (synth.speaking) {
+                        synth.cancel();
+                        stopWaveform();
+                    }
+                    agentWrapper.classList.remove('speaking');
+                    
+                    try {
+                        // Force browser to ask for microphone permissions if it hasn't already
+                        await navigator.mediaDevices.getUserMedia({ audio: true });
+                        recognition.start();
+                    } catch (err) {
+                        alert("Microphone permission denied or no microphone found: " + err.message + "\n\nPlease ensure your microphone is plugged in and you click 'Allow' in the browser prompt.");
+                        micStatus.textContent = "Mic blocked/not found.";
+                    }
+                }
+            } else {
+                alert("Voice recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+            }
+        });
+        
+        sendBtn.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            if(text) {
+                if (synth.speaking) {
+                    synth.cancel();
+                    stopWaveform();
+                }
+                agentWrapper.classList.remove('speaking');
+                appendMessage(text, 'user');
+                sendToAgent(text);
+                textInput.value = '';
+            }
+        });
+
+        function appendMessage(text, role) {
+            const div = document.createElement('div');
+            div.className = `chat-msg ${role}`;
+            div.textContent = text;
+            chatLog.appendChild(div);
+            chatLog.scrollTop = chatLog.scrollHeight;
+            if(text.trim() !== "") {
+                chatHistory.push({"role": role, "content": text});
+            }
+        }
+
+        async function sendToAgent(userMessage) {
+            try {
+                const response = await fetch('http://localhost:8000/api/chat/interview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        resume_text: uploadedFileText,
+                        job_title: jobTitleInput.value.trim(),
+                        history: chatHistory
+                    })
+                });
+
+                if (!response.ok) throw new Error("Backend error");
+                const data = await response.json();
+                
+                appendMessage(data.reply, 'assistant');
+                speakText(data.reply);
+                
+            } catch (error) {
+                console.error(error);
+                appendMessage("Sorry, I lost connection to the server.", 'assistant');
+                micStatus.textContent = "Connection error.";
+            }
+        }
+
+        let waveInterval = null;
+
+        function startWaveform() {
+            if (waveInterval) clearInterval(waveInterval);
+            document.querySelectorAll('.waveform').forEach(w => w.classList.add('active'));
+            waveInterval = setInterval(() => {
+                document.querySelectorAll('.bar').forEach(bar => {
+                    const height = Math.random() > 0.15 ? Math.floor(Math.random() * 60) + 15 : 6;
+                    bar.style.height = `${height}px`;
+                });
+            }, 120);
+        }
+
+        function stopWaveform() {
+            if (waveInterval) clearInterval(waveInterval);
+            waveInterval = null;
+            document.querySelectorAll('.waveform').forEach(w => w.classList.remove('active'));
+            document.querySelectorAll('.bar').forEach(bar => {
+                bar.style.height = `6px`;
+            });
+        }
+
+        function speakText(text) {
+            if (synth.speaking) {
+                synth.cancel();
+                agentWrapper.classList.remove('speaking');
+                stopWaveform();
+            }
+            
+            const utterThis = new SpeechSynthesisUtterance(text);
+            if(selectedVoice) utterThis.voice = selectedVoice;
+            
+            // Adjust pitch and rate to sound sweeter, softer, and more natural
+            utterThis.pitch = 1.15; 
+            utterThis.rate = 1.0; 
+            
+            utterThis.onstart = () => {
+                agentWrapper.classList.add('speaking');
+                micStatus.textContent = "VisionNova is speaking...";
+                startWaveform();
+            };
+            
+            utterThis.onend = () => {
+                agentWrapper.classList.remove('speaking');
+                micStatus.textContent = "Click microphone to reply";
+                stopWaveform();
+            };
+            
+            synth.speak(utterThis);
+        }
+
+        window.endInterview = function() {
+            synth.cancel();
+            location.reload();
+        };
+    </script>
+<script src="theme.js"></script>
+<script src="profile_modal.js"></script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="splash_screen.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNova AI - Job Suggestions</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="assets/app_logo.jpg" alt="VisionNova Logo" style="width: 38px; height: 38px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">
+                <div class="logo-text">
+                    <h2>VisionNova <span style="color: #8cc460;">AI</span></h2>
+                    <p>See Beyond the Data.</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class="ri-home-5-fill"></i> Dashboard</a>
+                <a href="upload_resume.html" class="nav-item"><i class="ri-file-user-line"></i> Upload Resume</a>
+                <a href="job_suggestions.html" class="nav-item active"><i class="ri-briefcase-4-fill" style="color: #8cc460;"></i> Job Suggestions</a>
+                <a href="mock_tests.html" class="nav-item"><i class="ri-clipboard-line"></i> Mock Tests</a>
+                <a href="interview_prep.html" class="nav-item"><i class="ri-chat-smile-3-line"></i> Interview Preparation Chatbot</a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar" id="nav-avatar">RV</div>
+                <div class="user-info">
+                    <h4 id="nav-name">Rahul Verma</h4>
+                </div>
+                <i class="ri-arrow-down-s-line" style="color: #6b7280;"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                
+                <div class="header-actions">
+
+                    <button class="icon-btn"><i class="ri-sun-line"></i></button>
+                    <button class="icon-btn" id="logout-btn" title="Exit"><i class="ri-logout-box-r-line"></i></button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" style="height: calc(100vh - 120px); overflow-y: auto; overflow-x: hidden; padding-bottom: 40px;">
+                
+                <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx">
+                
+                <div style="display: flex; justify-content: center; align-items: flex-start; padding-top: 5vh; min-height: 100%; width: 100%;">
+                    
+                    <!-- STATE 1: Upload Card -->
+                    <div id="upload-state" class="upload-page-card" style="background: rgba(4, 6, 4, 0.6); border: 2px dashed rgba(140, 196, 96, 0.4); border-radius: 20px; padding: 70px 50px; text-align: center; width: 100%; max-width: 650px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px); transition: all 0.3s ease;">
+                        <div class="upload-icon" style="width: 100px; height: 100px; margin: 0 auto 35px; border-width: 2px; display: flex; align-items: center; justify-content: center;">
+                            <i class="ri-briefcase-4-line" style="font-size: 45px; color: #8cc460;"></i>
+                        </div>
+                        <h2 style="font-size: 32px; color: #fff; font-weight: 500; margin-bottom: 15px;">Find Your Next Role</h2>
+                        <p style="font-size: 16px; color: #9ca3af; margin-bottom: 45px;">Upload your resume and our AI will scour the internet to find the best job matches for your skills.</p>
+                        <button id="select-btn" class="upload-btn" style="padding: 20px 50px; font-size: 16px; margin-bottom: 40px;">Select Resume <i class="ri-folder-open-line"></i></button>
+                        <span class="supported-formats" style="margin-top: 25px; display: block;">Supported formats: PDF, DOCX (Max 10MB)</span>
+                    </div>
+
+                    <!-- STATE 2: File Ready -->
+                    <div id="ready-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(140, 196, 96, 0.4); border-radius: 20px; padding: 60px 50px; text-align: center; width: 100%; max-width: 500px; box-shadow: inset 0 0 50px rgba(140, 196, 96, 0.05), 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px);">
+                        <div style="width: 80px; height: 80px; background: rgba(140,196,96,0.1); border: 1px solid rgba(140,196,96,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #8cc460; font-size: 36px; box-shadow: 0 0 20px rgba(140,196,96,0.2);">
+                            <i class="ri-file-pdf-2-line"></i>
+                        </div>
+                        <h3 id="filename-display" style="color: #fff; font-size: 20px; font-weight: 500; margin-bottom: 5px;">resume.pdf</h3>
+                        <p style="color: #9ca3af; font-size: 14px; margin-bottom: 25px;">Resume loaded successfully</p>
+                        
+                        <div style="margin-bottom: 25px; text-align: left;">
+                            <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">Preferred Location (Optional)</label>
+                            <input type="text" id="target-location" placeholder="e.g., Mysore, Coimbatore, Remote..." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px 15px; border-radius: 8px; width: 100%; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(140,196,96,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                        </div>
+
+                        <button onclick="startJobSearch()" class="upload-btn" style="padding: 16px 40px; font-size: 16px; width: 100%; justify-content: center; margin-top: 10px;">Start Search <i class="ri-search-eye-line" style="margin-left: 8px;"></i></button>
+                        <a href="#" onclick="resetUpload(event)" style="display: block; margin-top: 20px; color: #6b7280; font-size: 14px; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#6b7280'">Cancel</a>
+                    </div>
+
+                    <!-- STATE 3: Searching -->
+                    <div id="analyzing-state" style="display: none; background: rgba(4, 6, 4, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 80px 50px; text-align: center; width: 100%; max-width: 500px; backdrop-filter: blur(12px);">
+                        <div class="loader" style="width: 60px; height: 60px; border-width: 4px; border-color: rgba(140,196,96,0.2); border-top-color: #8cc460; margin: 0 auto 30px;"></div>
+                        <h2 style="color: #fff; font-size: 24px; font-weight: 500; margin-bottom: 10px;">Scanning Job Portals...</h2>
+                        <p style="color: #8cc460; font-size: 15px; animation: pulse 1.5s infinite;">Matching your skills with active hiring companies...</p>
+                    </div>
+
+                    <!-- STATE 4: Results Dashboard -->
+                    <div id="results-state" style="display: none; width: 100%; max-width: 1000px; flex-direction: column; gap: 24px; padding: 20px 0; margin: 0 auto; animation: fadeIn 0.5s ease-out;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h2 style="color: #fff; font-size: 28px; font-weight: 600;">Recommended Jobs for You</h2>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <div style="position: relative;">
+                                    <i class="ri-search-line" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                                    <input type="text" id="location-filter" list="location-options" onkeyup="filterJobs()" placeholder="Filter by location..." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 15px 10px 35px; border-radius: 8px; width: 200px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(140,196,96,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                                    <datalist id="location-options">
+                                        <!-- Populated dynamically -->
+                                    </datalist>
+                                </div>
+                                <button onclick="resetUpload(event)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">Search Again</button>
+                            </div>
+                        </div>
+                        
+                        <div id="jobs-container" style="width: 100%;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const currentUserStr = localStorage.getItem('currentUser');
+        if (currentUserStr) {
+            try {
+                const currentUser = JSON.parse(currentUserStr);
+                document.getElementById('nav-name').textContent = currentUser.fullname || 'User';
+                if (currentUser.fullname) {
+                    const parts = currentUser.fullname.split(' ');
+                    document.getElementById('nav-avatar').textContent = (parts[0][0] + (parts.length > 1 ? parts[parts.length-1][0] : '')).toUpperCase();
+                }
+            } catch(e) {}
+        }
+
+        let uploadedFileText = "";
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        if(pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        const fileInput = document.getElementById('file-input');
+        const selectBtn = document.getElementById('select-btn');
+        const uploadState = document.getElementById('upload-state');
+        const readyState = document.getElementById('ready-state');
+        const analyzingState = document.getElementById('analyzing-state');
+        const resultsState = document.getElementById('results-state');
+        const filenameDisplay = document.getElementById('filename-display');
+
+        selectBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', async (e) => {
+            if(e.target.files.length > 0) {
+                const file = e.target.files[0];
+                filenameDisplay.innerText = file.name;
+                uploadState.style.display = 'none';
+                readyState.style.display = 'block';
+                
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (file.type === "application/pdf" && pdfjsLib) {
+                        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                        let text = "";
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            text += content.items.map(item => item.str).join(" ") + " ";
+                        }
+                        uploadedFileText = text;
+                    } else if (file.name.toLowerCase().endsWith('.docx') && window.mammoth) {
+                        const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                        uploadedFileText = result.value;
+                    } else {
+                        uploadedFileText = "Fallback: File is not a supported format.";
+                    }
+                } catch(err) {
+                    uploadedFileText = "Error reading file.";
+                }
+            }
+        });
+
+        window.startJobSearch = async function() {
+            readyState.style.display = 'none';
+            analyzingState.style.display = 'block';
+            
+            try {
+                const targetLoc = document.getElementById('target-location').value;
+                const response = await fetch('http://localhost:8000/api/jobs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: uploadedFileText, location: targetLoc })
+                });
+
+                if (!response.ok) throw new Error("Backend error");
+                const data = await response.json();
+                
+                const container = document.getElementById('jobs-container');
+                container.innerHTML = `
+                    <div style="background: rgba(4,6,4,0.6); border: 1px solid rgba(140,196,96,0.3); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="background: rgba(140,196,96,0.1); border-bottom: 1px solid rgba(140,196,96,0.3);">
+                                    <th style="padding: 16px 20px; color: #8cc460; font-weight: 600; width: 60px;">Sl No</th>
+                                    <th style="padding: 16px 20px; color: #8cc460; font-weight: 600; width: 180px;">Company Name</th>
+                                    <th style="padding: 16px 20px; color: #8cc460; font-weight: 600; width: 200px;">Job Title</th>
+                                    <th style="padding: 16px 20px; color: #8cc460; font-weight: 600; width: 150px;">Location</th>
+                                    <th style="padding: 16px 20px; color: #8cc460; font-weight: 600;">Match Analysis</th>
+                                    <th style="padding: 16px 20px; color: #8cc460; font-weight: 600; width: 120px; text-align: center;">Website Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.jobs.map((job, index) => `
+                                    <tr class="job-row" data-location="${(job.location || '').toLowerCase()}" style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+                                        <td style="padding: 20px; color: #9ca3af; font-weight: 500;">0${index + 1}</td>
+                                        <td style="padding: 20px; color: #fff; font-weight: 500;"><i class="ri-building-4-line" style="color: #8cc460; margin-right: 8px;"></i> ${job.company}</td>
+                                        <td style="padding: 20px; color: #d1d5db; font-weight: 500;">${job.title}</td>
+                                        <td style="padding: 20px; color: #9ca3af; font-weight: 500;"><i class="ri-map-pin-line" style="margin-right: 5px;"></i> ${job.location || 'Remote'}</td>
+                                        <td style="padding: 20px; color: #9ca3af; font-size: 14px; line-height: 1.5;">${job.match_reason}</td>
+                                        <td style="padding: 20px; text-align: center;">
+                                            <a href="${job.link}" target="_blank" class="upload-btn" style="text-decoration: none; padding: 10px 20px; font-size: 13px; display: inline-block;">Apply <i class="ri-external-link-line" style="margin-left: 5px;"></i></a>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // Pre-defined list of major Indian Tech Hubs (City, State, Country)
+                const indianLocations = [
+                    "Bangalore, Karnataka, India", "Hyderabad, Telangana, India", "Pune, Maharashtra, India",
+                    "Mumbai, Maharashtra, India", "Gurgaon, Haryana, India", "Noida, Uttar Pradesh, India",
+                    "Chennai, Tamil Nadu, India", "Delhi, Delhi, India", "Kolkata, West Bengal, India",
+                    "Ahmedabad, Gujarat, India", "Jaipur, Rajasthan, India", "Chandigarh, Punjab, India",
+                    "Kochi, Kerala, India", "Indore, Madhya Pradesh, India", "Coimbatore, Tamil Nadu, India",
+                    "Remote, India"
+                ];
+                
+                // Combine pre-defined list with dynamically generated locations
+                const allLocs = [...indianLocations, ...data.jobs.map(j => j.location).filter(Boolean)];
+                const uniqueLocations = [...new Set(allLocs)];
+                
+                document.getElementById('location-options').innerHTML = uniqueLocations.map(loc => `<option value="${loc}">`).join('');
+                
+                analyzingState.style.display = 'none';
+                resultsState.style.display = 'flex';
+            } catch (error) {
+                console.error(error);
+                alert("Connection failed! Ensure the backend is running.");
+                resetUpload();
+            }
+        };
+
+        window.resetUpload = function(e) {
+            if(e) e.preventDefault();
+            fileInput.value = '';
+            resultsState.style.display = 'none';
+            readyState.style.display = 'none';
+            analyzingState.style.display = 'none';
+            uploadState.style.display = 'block';
+            document.getElementById('location-filter').value = '';
+        };
+
+        window.filterJobs = function() {
+            const input = document.getElementById('location-filter').value.toLowerCase();
+            const rows = document.querySelectorAll('.job-row');
+            rows.forEach(row => {
+                const loc = row.getAttribute('data-location');
+                if (loc.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        };
+    </script>
+    
+    <style>
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<script src="theme.js"></script>
+<script src="profile_modal.js"></script>
+</body>
+</html>
+
+
+
+
+
