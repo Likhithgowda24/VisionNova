@@ -5,6 +5,8 @@ import requests
 import json
 import re
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -426,6 +428,8 @@ async def chat_interview(data: InterviewChatRequest):
     # Get your FREE API key from: https://console.groq.com/keys
     # =======================================================================
     import os
+from dotenv import load_dotenv
+load_dotenv()
     GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
     
     if GROQ_API_KEY:
@@ -527,6 +531,7 @@ async def send_otp(data: OTPRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
 
 
 
