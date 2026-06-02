@@ -79,13 +79,91 @@
                             <i class="ri-shield-check-line"></i> Your data is secure and confidential <span class="dot"></span>
                         </div>
                     </div>
+    <script src="splash_screen.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionNova AI - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="assets/app_logo.jpg" alt="VisionNova Logo" style="width: 38px; height: 38px; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);">
+                <div class="logo-text">
+                    <h2>VisionNova <span style="color: #8cc460;">AI</span></h2>
+                    <p>See Beyond the Data.</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item active"><i class="ri-home-5-fill" style="color: #8cc460;"></i> Dashboard</a>
+                <a href="upload_resume.html" class="nav-item"><i class="ri-file-user-line"></i> Upload Resume</a>
+                <a href="job_suggestions.html" class="nav-item"><i class="ri-briefcase-4-line"></i> Job Suggestions</a>
+                <a href="mock_tests.html" class="nav-item"><i class="ri-clipboard-line"></i> Mock Tests</a>
+                <a href="interview_prep.html" class="nav-item"><i class="ri-chat-smile-3-line"></i> Interview Preparation Chatbot</a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar" id="nav-avatar">RV</div>
+                <div class="user-info">
+                    <h4 id="nav-name">Rahul Verma</h4>
+                </div>
+                <i class="ri-arrow-down-s-line" style="color: #6b7280;"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                
+                <div class="header-actions">
+
+                    <button class="icon-btn"><i class="ri-sun-line"></i></button>
+                    <button class="icon-btn" id="logout-btn" title="Exit"><i class="ri-logout-box-r-line"></i></button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-body">
+                <div class="welcome-section">
+                    <h1 id="welcome-text">Welcome to VisionNova <span style="color:#8cc460;">AI</span><img src="assets/app_logo.jpg" alt="Logo" style="width: 1.4em; height: 1.4em; mix-blend-mode: screen; filter: contrast(2.0) brightness(1.4) saturate(1.8) drop-shadow(0 0 4px rgba(140,196,96,0.6)); -webkit-mask-image: radial-gradient(circle at center, black 75%, transparent 100%); mask-image: radial-gradient(circle at center, black 75%, transparent 100%);"></h1>
+                    <p><i class="ri-sparkling-fill" style="color:#8cc460; font-size:16px;"></i> Your AI Career Companion</p>
+                </div>
+                
+                <div class="hero-container">
+                    <!-- Left: Robot -->
+                    <div class="robot-section">
+                        <img src="assets/exact_robot.png" alt="AI Robot Assistant">
+                    </div>
+                    
+                    <!-- Right: Upload Card -->
+                    <div class="upload-section">
+                        <div class="upload-card">
+                            <div class="upload-icon">
+                                <i class="ri-file-upload-line"></i>
+                            </div>
+                            <h2>Upload Your Resume</h2>
+                            <p>Upload your resume and let AI find the best<br>opportunities for you.</p>
+                            <button class="upload-btn" onclick="window.location.href='upload_resume.html'">Upload Resume <i class="ri-arrow-up-circle-line"></i></button>
+                            <span class="supported-formats">Supports PDF, DOCX (Max 10MB)</span>
+                        </div>
+                        
+                        <div class="security-badge">
+                            <i class="ri-shield-check-line"></i> Your data is secure and confidential <span class="dot"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Auth Check (Bypassed for viewing design)
+        // Auth Check
         const currentUserStr = localStorage.getItem('currentUser');
         if (currentUserStr) {
             try {
@@ -100,13 +178,29 @@
                     } else {
                         initials = parts[0].substring(0, 2);
                     }
+                    document.getElementById('nav-avatar').textContent = initials.toUpperCase();
+
+                    // Update main welcome heading with user's first name
+                    const firstName = parts[0];
+                    document.getElementById('welcome-text').innerHTML = `Welcome back, ${firstName} <img src="assets/app_logo.jpg" alt="Logo" style="width: 1.4em; height: 1.4em; mix-blend-mode: screen; filter: contrast(1.5) brightness(1.2); -webkit-mask-image: radial-gradient(circle at center, black 65%, transparent 85%); mask-image: radial-gradient(circle at center, black 65%, transparent 85%);">`;
+                }
+            } catch(e) {
+                console.error(e);
+                window.location.href = 'login.html';
+            }
+        } else {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if(confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
             }
         });
     </script>
 <script src="theme.js"></script>
 <script src="profile_modal.js"></script>
-</body>
-</html>
 
 
 
