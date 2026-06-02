@@ -12,11 +12,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 # DATABASE SETUP
 # ---------------------------------------------------------
 # Connect to Live Supabase PostgreSQL Database!
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:likhith%40123@db.evwyslqwcaaakyrksmpz.supabase.co:5432/postgres"
+DB_FILE = os.path.join(os.path.dirname(__file__), "visionnova.db")`nSQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_FILE}"
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -480,5 +478,6 @@ async def send_otp(data: OTPRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
 
 

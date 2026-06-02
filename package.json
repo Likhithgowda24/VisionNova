@@ -4,7 +4,7 @@
     "description":  "",
     "main":  "profile_modal.js",
     "scripts":  {
-                    "backend":  "cd backend \u0026\u0026 python -m uvicorn main:app --reload --port 8000",
+                    "backend":  "cd api \u0026\u0026 python -m uvicorn index:app --reload --port 8000",
                     "frontend":  "http-server . -p 3000 -c-1",
                     "dev":  "concurrently \"npm run backend\" \"npm run frontend\""
                 },

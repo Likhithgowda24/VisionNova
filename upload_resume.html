@@ -264,7 +264,7 @@
             
             try {
                 // Send extracted text to our FastAPI backend which talks to Ollama
-                const response = await fetch('/api/analyze', {
+                const response = await fetch('http://localhost:8000/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: uploadedFileText })
@@ -333,6 +333,7 @@
 <script src="profile_modal.js"></script>
 </body>
 </html>
+
 
 
 
