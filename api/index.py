@@ -12,9 +12,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 # DATABASE SETUP
 # ---------------------------------------------------------
 if os.getenv("VERCEL"):
-    DB_FILE = "/tmp/visionnova.db"
+    DB_FILE = "/tmp/visionnova.db" if os.environ.get("VERCEL") else os.path.join(os.path.dirname(__file__), "visionnova.db")
 else:
-    DB_FILE = os.path.join(os.path.dirname(__file__), "visionnova.db")
+    DB_FILE = "/tmp/visionnova.db" if os.environ.get("VERCEL") else os.path.join(os.path.dirname(__file__), "visionnova.db")
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_FILE}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
@@ -481,6 +481,7 @@ async def send_otp(data: OTPRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
 
 
 
