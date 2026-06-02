@@ -421,6 +421,34 @@ async def chat_interview(data: InterviewChatRequest):
     
     messages = [{"role": "system", "content": system_prompt}] + data.history
     
+    # =======================================================================
+    # CLOUD AI INTEGRATION (GROQ)
+    # Get your FREE API key from: https://console.groq.com/keys
+    # =======================================================================
+    import os
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+    
+    if GROQ_API_KEY:
+        try:
+            groq_payload = {
+                "model": "llama3-8b-8192",
+                "messages": messages,
+                "temperature": 0.6,
+                "max_tokens": 150
+            }
+            headers = {
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            # 10 second timeout for Cloud API
+            response = requests.post("https://api.groq.com/openai/v1/chat/completions", json=groq_payload, headers=headers, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            return {"reply": result["choices"][0]["message"]["content"]}
+        except Exception as e:
+            print("Groq API Error:", e)
+            
+    # Local Ollama Fallback (Only works when running locally via npm run dev)
     payload = {
         "model": "llama3",
         "messages": messages,
