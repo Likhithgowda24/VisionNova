@@ -156,14 +156,34 @@ async def analyze_resume(data: ResumeData):
     {data.text[:2500]} 
     """
 
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+    if GROQ_API_KEY:
+        groq_payload = {
+            "model": "llama3-8b-8192",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+            "max_tokens": 300,
+            "response_format": {"type": "json_object"}
+        }
+        try:
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            response = requests.post("https://api.groq.com/openai/v1/chat/completions", json=groq_payload, headers=headers, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            analysis_data = json.loads(result['choices'][0]['message']['content'])
+            analysis_data['score'] = exact_score
+            return analysis_data
+        except Exception as e:
+            print("Groq ATS Analyzer Error:", e)
+
     payload = {
         "model": "llama3",
         "prompt": prompt,
         "format": "json",
         "stream": False,
         "options": {
-            "temperature": 0.1,  # Zero creativity, purely extraction (FAST)
-            "num_predict": 300   # Cap the output length to force fast generation
+            "temperature": 0.1,
+            "num_predict": 300
         }
     }
     
@@ -294,6 +314,23 @@ async def generate_mock_test(data: MockTestGenerateRequest):
     {data.job_description[:2000]}
     """
     
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+    if GROQ_API_KEY:
+        groq_payload = {
+            "model": "llama3-8b-8192",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2,
+            "response_format": {"type": "json_object"}
+        }
+        try:
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            response = requests.post("https://api.groq.com/openai/v1/chat/completions", json=groq_payload, headers=headers, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            return json.loads(result['choices'][0]['message']['content'])
+        except Exception as e:
+            print("Groq Mock Test Gen Error:", e)
+
     payload = {
         "model": "llama3",
         "prompt": prompt,
@@ -354,6 +391,35 @@ async def evaluate_mock_test(data: MockTestEvaluateRequest):
     }
     """
     
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+    if GROQ_API_KEY:
+        groq_payload = {
+            "model": "llama3-8b-8192",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+            "response_format": {"type": "json_object"}
+        }
+        try:
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            response = requests.post("https://api.groq.com/openai/v1/chat/completions", json=groq_payload, headers=headers, timeout=10)
+            response.raise_for_status()
+            result = response.json()
+            analysis_data = json.loads(result['choices'][0]['message']['content'])
+            
+            evals = analysis_data.get('evaluations', [])
+            for i, ans in enumerate(data.user_answers):
+                if len(ans.strip()) < 5:
+                    if i < len(evals):
+                        evals[i]['is_correct'] = False
+                        evals[i]['feedback'] = "You did not provide an answer. You must attempt the question to receive points."
+                        
+            correct_count = sum(1 for e in evals if e.get('is_correct', False))
+            total_questions = len(evals) if len(evals) > 0 else 1
+            analysis_data['total_score'] = int((correct_count / total_questions) * 100)
+            return analysis_data
+        except Exception as e:
+            print("Groq Mock Test Eval Error:", e)
+
     payload = {
         "model": "llama3",
         "prompt": prompt,
@@ -427,9 +493,6 @@ async def chat_interview(data: InterviewChatRequest):
     # CLOUD AI INTEGRATION (GROQ)
     # Get your FREE API key from: https://console.groq.com/keys
     # =======================================================================
-    import os
-from dotenv import load_dotenv
-load_dotenv()
     GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
     
     if GROQ_API_KEY:
