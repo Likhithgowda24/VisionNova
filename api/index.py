@@ -437,7 +437,25 @@ async def chat_interview(data: InterviewChatRequest):
         return {"reply": result["message"]["content"]}
     except Exception as e:
         print("Chat Error:", e)
-        return {"reply": "I'm sorry, I'm having a little trouble hearing you. Could you repeat that or tell me more about your experience?"}
+        # Smart Conversational Fallback for Cloud (Vercel) where Ollama is unavailable
+        user_message = data.history[-1]["content"].lower() if data.history else ""
+        
+        reply = "That's an interesting point. Could you tell me more about how you handled challenges in that specific situation?"
+        
+        if "hello" in user_message or "hi" in user_message or "start" in user_message:
+            reply = f"Hello! Welcome to your interview for the {data.job_title} role. To start, could you walk me through your most relevant experience?"
+        elif "experience" in user_message or "worked" in user_message or "project" in user_message:
+            reply = "Impressive background. Can you give me a specific example of a difficult challenge you faced during that time, using the STAR method (Situation, Task, Action, Result)?"
+        elif "strength" in user_message or "good at" in user_message:
+            reply = "Those are valuable strengths. How would you apply them directly to the day-to-day responsibilities of this position?"
+        elif "weakness" in user_message or "improve" in user_message:
+            reply = "I appreciate your honesty. What actionable steps are you currently taking to improve in that area?"
+        elif "team" in user_message or "conflict" in user_message:
+            reply = "Teamwork is crucial here. Can you describe a time you disagreed with a colleague and how you resolved it professionally?"
+        elif "?" in user_message:
+            reply = "That's a great question. In this role, adaptability and strong problem-solving skills are our top priorities. How do you usually adapt to sudden changes in a project's scope?"
+            
+        return {"reply": reply}
 
 class OTPRequest(BaseModel):
     email: str
